@@ -3,7 +3,7 @@
 Simple Hinglish guide, final implemented code ke liye.
 
 Project root: `E:\VISHAL LOVANSHI\All InOne`.
-Neeche har `src/...` path isi root ke andar actual file hai. Ordinary category/campaign changes ke liye sirf **2 code files** edit karni hain: `src/data/offerCategories.js` aur `src/data/offers.js`. Approved creative ko `src/images/` mein rakhna asset step hai. Naya route ya category component normally banana nahi padta.
+Neeche har `src/...` path isi root ke andar actual file hai. Ordinary category/campaign changes ke liye sirf **2 code files** edit karni hain: `src/data/offerCategories.js` aur `src/data/offers.js`. Self logo currently provided nahi; approved logo `src/images/self-credit-builder.png` mein add karna alag asset step hai. Naya route ya category component normally banana nahi padta.
 
 ## Section A - Actual project structure
 
@@ -12,6 +12,7 @@ Yeh inspected project tree hai. Installed dependencies (`node_modules/`) aur gen
 ```text
 All InOne/
 |-- public/
+|   |-- .htaccess
 |   |-- 300e90219bef1759941f487b61d21f90.jpg
 |   |-- c4904e0eec5ac7bff4852be3ea1d3587.jpg
 |   |-- df0ba9cb94b7066138925676d5251375.jpg
@@ -28,6 +29,7 @@ All InOne/
 |   |   |-- Footer.jsx
 |   |   |-- Hero.jsx
 |   |   |-- HowItWorks.jsx
+|   |   |-- LegalPageLayout.jsx
 |   |   |-- Navbar.jsx
 |   |   |-- OfferCard.jsx
 |   |   |-- OfferRenderer.jsx
@@ -84,9 +86,9 @@ All InOne/
 `-- vite.config.js
 ```
 
-`src/components/` reusable UI blocks hain. `src/pages/` route-level screens hain. `src/pages/offersPages/` preserved category components hain. `src/data/` content/configuration ka single source hai. `src/images/` approved campaign creatives aur branding assets rakhta hai. `public/` mein existing reference/template JPGs aur `vite.svg` hain; unhe campaign creatives ki jagah use nahi kiya gaya.
+`src/components/` reusable UI blocks hain. `src/pages/` route-level screens hain. `public/.htaccess` Apache fallback hai, Vite build usse dist root mein copy karta hai. `src/components/LegalPageLayout.jsx` shared legal-page design, responsive table of contents, draft banner aur section icons render karta hai. `src/pages/PrivacyPolicy.jsx` aur `TermsConditions.jsx` is layout mein alag content dete hain. `src/pages/offersPages/` preserved category components hain. `src/data/` content/configuration ka single source hai. `src/images/` approved campaign creatives aur branding assets rakhta hai. `public/` mein existing reference/template JPGs aur `vite.svg` hain; unhe campaign creatives ki jagah use nahi kiya gaya.
 
-Actual campaign images: `unnamed.png` (Lending For Bad Credit), `redcard.png` (RedArrowLoans), `MO.png` (MoneyMutual), `trans.jpeg` (supplied TransUnion logo). Existing external URLs aur descriptions preserve hain.
+Actual campaign images: `unnamed.png` (Lending For Bad Credit), `redcard.png` (RedArrowLoans), `MO.png` (MoneyMutual), `trans.jpeg` (supplied TransUnion logo). Self creative missing hai; Self card honest creative-pending placeholder dikhata hai. Existing campaign URLs/descriptions preserve hain.
 
 Missing client assets:
 - `src/images/transunion-credit-essentials.png`: actual approved TransUnion creative. Abhi supplied local `src/images/trans.jpeg` logo complete natural aspect ratio mein dikhta hai. Full approved campaign creative add karne par logo fallback replace ho jayega. Dono unavailable hon to honest creative-pending message hai. Logo full campaign advertisement nahi hai.
@@ -112,7 +114,7 @@ React hooks, Router `useLocation`/`useNavigate`, Lucide icons, branding logo aur
 Approved images import karta hai aur TransUnion optional full creative/local logo ke liye `import.meta.glob` use karta hai. `offers` campaign objects ki single array hai. Har item mein unique `id`, `status`, `categoryId`, `title`, `description`, `image`, `link` aur optional fields hote hain. `publishedOffers` sirf `status: 'published'` entries return karta hai. React component nahi hai: kuch render nahi karta aur props nahi leta. `offerCategories.js` is data ko consume karta hai. Campaign add/update/disable karna ho to yahi file edit karo.
 
 ### `src/data/offerCategories.js`
-Lucide icons aur `publishedOffers` import karta hai. Category ki `id`, `label`, `slug`, `icon`, `description`, `status` yahan define hoti hain. Array automatically label ke A-Z order mein sort hoti hai. Is file ka output Navbar, CategoryNavigation, Offers, OfferRenderer, category wrappers, OfferCard, OffersSection aur Hero use karte hain. Koi JSX render nahi karta.
+Lucide icons aur `publishedOffers` import karta hai. Category ki `id`, `label`, `slug`, `icon`, `description`, `status` yahan define hoti hain. Array pehle `priority` se order hoti hai, phir label A-Z se. `Building Your Credit Score` ke liye `priority: 0` hai, isliye first rehta hai. Baaqi categories priority omit karke alphabetical rehti hain. Is file ka output Navbar, CategoryNavigation, Offers, OfferRenderer, footer, category wrappers, OfferCard, OffersSection aur Hero use karte hain. Koi JSX render nahi karta.
 
 Exports:
 - `offerCategories`: sab registered categories, including unavailable ones.
@@ -121,7 +123,7 @@ Exports:
 - `getCategoryOffers(categoryId)`: us category ke available campaigns.
 - `getOfferCategory(slug)`: URL slug ka registered category object; unknown slug par `undefined`.
 
-Category add/rename/disable karna ho to edit karo. Normally `id` aur `slug` same stable value rakhna easiest hai, lekin `categoryId` actual `id` se match hona chahiye; URL `slug` se banta hai.
+Category add/rename/disable karna ho to edit karo. Normally `id` aur `slug` same stable value rakhna easiest hai, lekin `categoryId` actual `id` se match hona chahiye; URL `slug` se banta hai. `Building Your Credit Score` first pinned category hai; all other items A-Z. Uski priority same rakhni; baaki new categories ko `priority` mat do.
 
 ### `src/pages/Offers.jsx`
 Router `useParams`/`Link`, category lookup, CategoryNavigation aur OfferRenderer import karta hai. App ke `/offers` aur `/offers/:category` routes use karte hain. Props nahi leta: URL se `slug` padhta hai. Sidebar/mobile selector, selected heading, description aur renderer render karta hai. `selected={slug}` OfferRenderer ko pass hota hai. `/offers` par slug absent hai: All Offers render hota hai. Unknown slug par "Category not found" aur return link; disabled known category par honest empty state. Page layout change karna ho tab edit karo, category names yahan hardcode mat karo.
@@ -149,7 +151,7 @@ Home App ke `/` route par aata hai. It imports Hero, OffersSection, WhyChooseUs,
 ### Other relevant files
 - `Hero.jsx`: Home uses it. React/Lucide, Router Link, `offerCategories` and optional hero asset. No props; premium heading, CTA and category illustrations render karta hai. Illustrations category range dikhate hain, active campaign availability claim nahi.
 - `ScrollToTop.jsx`: App uses it; `useEffect` + `useLocation`. No props/no visible UI. Pathname change par scroll top; category history navigation intact.
-- `Footer.jsx`: App uses it; React/Router/Lucide/logo. No props. Global footer links, legal disclosures and homepage-section navigation.
+- `Footer.jsx`: App uses it; React/Router/Lucide/logo and `availableOfferCategories`. No props. Global footer links, legal disclosures, homepage-section navigation and shared live offer-category links.
 - `About.jsx`, `HowItWorks.jsx`, `WhyChooseUs.jsx`, `CTA.jsx`: Home uses them; React + Lucide, local copy/data, no external category props. General information and smooth-scroll CTAs render karte hain; campaigns define nahi karte.
 - `Contact.jsx`: App route; React `useState`/Lucide. No props. Form local state and submit handler. Existing handler logs data and displays submitted state; backend/API integration currently not implemented. This UI update doesn't change that behavior.
 - `PrivacyPolicy.jsx`, `TermsConditions.jsx`: App route pages; React, Router Link and Lucide; no campaign props. Legal sections render karte hain.
@@ -211,6 +213,7 @@ Neeche examples **draft maintenance templates** hain, new campaign claims/URLs n
   icon: Car,
   description: "Review auto insurance offer details and provider terms.",
   status: "unavailable", // Enable after approved campaign is ready.
+  // `priority` omit karo to alphabetical; pinned category ka priority 0 hota hai.
 },
 ```
 
@@ -331,3 +334,14 @@ npm run lint
 - Browser console: no runtime/missing-import/key errors. Horizontal overflow and broken image check.
 
 Completed automated checks and final UI/build results are recorded in IMPLEMENTATION_NOTES.md. Build doesn't replace runtime testing.
+
+
+## New client update: Building Your Credit Score and legal drafts
+
+`Building Your Credit Score` (`building-your-credit-score`) `TrendingUp` icon ke saath first pinned category hai. `offerCategories.js` priority sort first applies karta hai, uske baad ordinary categories alphabetical hain. Navbar, Offers sidebar/mobile panel aur Footer same populated category config use karte hain.
+
+`offers.js` mein Self Credit Builder exact marketing copy, `categoryId: 'building-your-credit-score'` aur supplied tracking URL ke saath published campaign hai. Existing generic OfferRenderer/CampaignGrid already usse render karte hain; separate page/component ki zaroorat nahi. Client ka Self logo attachment/project mein nahi mila. `src/images/self-credit-builder.png` add karoge to optional Vite glob use karega; tab tak campaign card placeholder dikhata hai. `/offers` par Self campaign remaining campaigns ke saath dikhta hai. Credit Monitoring separate hai.
+
+Privacy aur Terms pages `src/components/LegalPageLayout.jsx` shared accessible/responsive shell use karte hain. Draft banner and section-level owner-review callouts visible hain. Verified nahi business details, data vendors, contact method, jurisdiction ya commercial relationships invent nahi kiye gaye. Contact form code values browser console mein log karta hai, aur koi API integration nahi hai; policy draft prominently identifies this. Owner must remove/resolve this behavior and get qualified legal review before publishing final statements.
+
+`public/.htaccess` Apache `mod_rewrite` fallback ko configure karta hai, static files ko preserve karke `/privacy`, `/terms`, aur dynamic `/offers/:category` ko `index.html` par bhejta hai. Vite build se `dist/.htaccess` copy hona validate karo. Yeh file root-domain Apache/Hostinger deployment assume karti hai; subdirectory hosting ke liye `RewriteBase` and path rules host ke mutabiq adjust karo. Actual production host, Apache module and DNS/deployment settings is workspace se verify nahi kiye gaye.

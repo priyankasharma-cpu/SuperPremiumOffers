@@ -3,8 +3,12 @@ import instantCashImage from "../images/redcard.png";
 import emergencyLoanImage from "../images/MO.png";
 
 // Optional approved creative: src/images/transunion-credit-essentials.png
-// Prefer full approved creative; the supplied local logo is the current fallback.
+// Full approved creative takes priority; the optional file is currently not supplied.
 const transunion = import.meta.glob(["../images/transunion-credit-essentials.png", "../images/trans.jpeg"], { eager: true, query: "?url", import: "default" });
+
+// Optional client asset. Add src/images/self-credit-builder.png and the card will
+// display the full image; without it, OfferCard uses an honest creative placeholder.
+const selfCreative = import.meta.glob("../images/self-credit-builder.png", { eager: true, query: "?url", import: "default" });
 
 export const offers = [
     {
@@ -49,6 +53,16 @@ export const offers = [
         subtype: "Short-Term Loans",
         image: emergencyLoanImage,
         link: "https://moneymutual.com/",
+    },
+    {
+        id: "self-credit-builder",
+        status: "published",
+        title: "Self Credit Builder",
+        categoryId: "building-your-credit-score",
+        image: selfCreative["../images/self-credit-builder.png"] || null,
+        imageAlt: "Self Credit Builder campaign creative",
+        description: "Your credit building toolkit. Build savings & credit with Self’s Credit Builder Account — plus, lift up your credit by reporting rent and bills.",
+        link: "https://www.orb36aam.com/2BQ64KRMP/81ZTZ8K/",
     },
     {
         id: "transunion",

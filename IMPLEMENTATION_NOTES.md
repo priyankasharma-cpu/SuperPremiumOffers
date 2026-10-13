@@ -69,3 +69,27 @@ CATEGORY_DEVELOPER_GUIDE.md explains actual final project structure, file import
 ## Earlier platform update retained
 
 The earlier premium-platform update changed Hero, HowItWorks, About, WhyChooseUs, Footer, index.html and the campaign/category components listed above. Multi-category general copy, SEO, homepage CTA and removal of the large Offers banner remain in place. All approved loan campaign details remain preserved.
+
+
+## Latest client update: October 13, 2026
+
+Modified existing files:
+- src/data/offerCategories.js (pinned first category with priority sort)
+- src/data/offers.js (Self Credit Builder campaign and optional asset lookup)
+- src/components/Footer.jsx (footer categories share active centralized data)
+- src/pages/PrivacyPolicy.jsx (owner-review draft)
+- src/pages/TermsConditions.jsx (owner-review draft)
+
+New files:
+- src/components/LegalPageLayout.jsx (shared legal layout with section icons and review notices)
+- public/.htaccess (Apache SPA route fallback; Vite copies it to dist/.htaccess)
+
+Added `/offers/building-your-credit-score`. It is first in the actual sorted category list, separate from Credit Monitoring, and receives the existing generic campaign card rendering. The All Offers route now includes Self Credit Builder along with the four other published campaigns. Privacy/terms routes were already registered in App.jsx; both rendered sections had an `icon` prop typo that left `Icon` undefined and made the pages fail at runtime. Fixed both and added clear draft and owner-review notes to all legal sections.
+
+Self supplied client description and exact campaign tracking URL are in the data. No Self logo file exists in the project or supplied attachment folder; its card currently renders an explicit creative-pending placeholder. Adding the approved file at `src/images/self-credit-builder.png` enables the existing optional asset lookup. No logo was fabricated or borrowed from another brand.
+
+Legal drafts identify verified code behavior and unverified items. The current Contact handler logs entered fields to the browser console, displays a local success state and has no API submission configured. Production server logs, vendors, retention, security controls, privacy rights process, business identity, governing jurisdiction and campaign compensation/affiliate relationship were not available to verify. The legal UI marks these items for owner review and should receive qualified counsel review before being treated as final.
+
+Footer Privacy Policy, Privacy, Terms & Conditions, Terms and Read Our Terms links were checked against `/privacy` and `/terms`. There is no existing deployment rewrite config in the repository. A root Apache `mod_rewrite` fallback was added under `public/` and confirmed copied to `dist/`. It assumes root-domain Apache/Hostinger with `mod_rewrite`; actual live hosting behavior and any subdirectory configuration are unverified.
+
+Current validation: `npm run build` passed, with `dist/.htaccess` present; `npm run lint` passed with zero errors and one existing warning in the disabled CallPopup.jsx hooks effect. Headless Edge verified category priority, exact Self text/URL, campaign inclusion, separate existing campaigns, direct/refresh/back navigation, both legal routes/content/icons, all footer legal links, responsive mobile widths and no runtime/console errors.

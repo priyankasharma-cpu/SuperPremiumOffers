@@ -17,13 +17,10 @@ import {
 } from "lucide-react";
 
 import logo from "../images/weblogo.png";
+import { availableOfferCategories } from "../data/offerCategories";
 
-// Update this list when new categories become available.
-// Ideally, import from your shared offerCategories configuration.
-const footerCategories = [
-  { label: "Credit Monitoring", slug: "credit-monitoring" },
-  { label: "Personal Loans", slug: "personal-loans" },
-];
+// Keep footer category links aligned with the populated categories in the navbar.
+const footerCategories = availableOfferCategories;
 
 const Footer = () => {
   const location = useLocation();
