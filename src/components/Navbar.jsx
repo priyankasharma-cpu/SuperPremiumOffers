@@ -10,12 +10,12 @@ import {
   WalletCards,
 } from "lucide-react";
 
-import { availableOfferCategories } from "../data/offerCategories";
+import { availableOfferCategories } from "./OfferRenderer";
 
 import logo from "../images/weblogo.png";
 
 /* =========================================
-   OFFER CATEGORIES — ALPHABETICAL ORDER
+   OFFER CATEGORIES — SHARED CATEGORY ORDER
 ========================================= */
 
 const categories = availableOfferCategories;

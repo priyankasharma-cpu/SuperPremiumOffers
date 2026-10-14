@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronRight, LayoutGrid, Sparkles } from "lucide-react";
-import { availableOfferCategories, getOfferCategory } from "../data/offerCategories";
+import { getOfferCategory } from "../data/offerCategories";
+import { availableOfferCategories } from "./OfferRenderer";
 
 // Both sidebar and mobile selector read the same enabled, populated categories.
 const CategoryLinks = ({ onSelect }) => (

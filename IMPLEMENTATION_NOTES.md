@@ -1,3 +1,98 @@
+# SuperPremiumOffers — manual JSX refactor
+
+Completed on October 14, 2026. Architecture simplification only; no deployment.
+
+## Current architecture
+
+- One category list: `src/data/offerCategories.js`, with the original explicit navigation order, labels, descriptions, icons and slugs.
+- Eight category JSX files: complete campaign card markup belongs to its category file. Four empty categories are preserved.
+- Explicit imports and switch: `src/components/OfferRenderer.jsx`. No campaign registry, central campaign data or shared card template.
+- Navbar, Offers sidebar/mobile selector and Footer use availability derived from these exact JSX cards. Adding/removing the last card updates category visibility without a second file edit.
+- Offers owns its original grid; the homepage owns its original grid. Both render the same category JSX through OfferRenderer.
+- Home/All Offers retain their separate campaign ordering; the renderer counts fragment children to calculate numbering offsets automatically. Local card numbers remain directly editable inside each category file.
+- Category functions stay pure JSX fragments, one direct child per card. Interactive child components can live in the same file.
+- Maintained Hinglish instructions: [MANUAL_CATEGORY_CAMPAIGN_GUIDE.md](./MANUAL_CATEGORY_CAMPAIGN_GUIDE.md). The old guide now points here.
+
+## Rollback point and pre-existing changes
+
+Snapshot: `C:/Users/abc/.codex/tmp/superpremiumoffers-before-manual-jsx-20261014-131426`. This contains the original source/assets/documentation, the uncommitted changes in OfferCard/offers/offerCategories, the untracked Ultiself image, original Git HEAD and status. No reset, stash, commit or index changes were used.
+
+The old campaign/card data was migrated from that working-tree snapshot, not from Git HEAD. All original campaign assets, including the untracked Ultiself image, are byte-identical. See the snapshot's `ROLLBACK.md` for restoration guidance.
+
+## Validation
+
+- Pilot: migrated Health & Wellness first; complete page/card DOM, dimensions, content and links matched baseline. Screenshots at 375px and 1440px were pixel-identical before continuing.
+- Final `npm run build`: passed. `dist/.htaccess` is present and byte-identical to the existing Apache SPA fallback.
+- Final `npm run lint`: zero errors; the same pre-existing disabled CallPopup hook dependency warning remains at line 103.
+- Baseline, development and production: 15 routes × 8 widths (320, 375, 767, 768, 1023, 1024, 1440, 1920), 120 page checks per run. No broken images, horizontal overflow or runtime/console errors.
+- Complete page text, campaign DOM, classes, geometry, images, exact CTA destinations/attributes, category links, Footer links and grid dimensions match baseline. Production asset URL names are normalized only for DOM comparison; the six built campaign image files were separately verified byte-for-byte against the original assets.
+- Production screenshot comparison: 12 byte-identical images; 0 image(s) with only isolated one-channel-level antialiasing rounding; zero substantive screenshot differences.
+- Production interactions: desktop dropdown/sidebar, keyboard Home/End/ArrowDown/Escape, outside click, mobile navbar, mobile category selector closure/body scroll, Footer category/legal links, direct navigation/refresh and back/forward passed.
+- All six CTA clicks open the exact original URL in a new tab with no opener access. External requests were intercepted during testing; provider uptime/conversion behavior was not tested.
+- Manual workflow tested using temporary copies of a real existing card: adding a campaign only in HealthWellness updates All Offers numbering; adding a card only in an empty category activates route/navigation/Footer/homepage; removing the final card hides navigation and keeps the direct URL empty state. All temporary changes were restored byte-for-byte; no test campaigns remain.
+- App, main, global CSS, Hero, Home, ScrollToTop, Contact, legal pages, dependency manifests, Vite configuration and all source/public assets remain byte-identical to the snapshot.
+- Unknown category behavior, known empty-category behavior and the existing unmatched-route behavior are preserved. No new wildcard 404 route was introduced.
+- Apache fallback was preserved and copied into the build. Actual production-server configuration was not accessed; no live deployment was performed.
+
+Detailed baseline, pilot, development, production, interaction and screenshot records live in `C:/Users/abc/.codex/tmp/superpremiumoffers-before-manual-jsx-20261014-131426/verification`.
+
+## Before-and-after campaign inventory
+
+Before: 8 categories, 6 campaigns. After: 8 categories, the same 6 campaigns. None added, removed, renamed or rewritten.
+
+- Lending For Bad Credit — `personal-loans` — https://www.lendingforbadcredit.com/
+- RedArrowLoans — `personal-loans` — https://www.redarrowloans.com/
+- MoneyMutual — `personal-loans` — https://moneymutual.com/
+- Self Credit Builder — `building-your-credit-score` — https://www.orb36aam.com/2BQ64KRMP/81ZTZ8K/
+- Ultiself — `health-wellness` — https://monetisetrk4.co.uk/?a=26325&c=54974&s1=
+- TransUnion — `credit-monitoring` — https://www.transunion.com/credit-scores-reports/credit-essentials
+
+Navigation order: Building Your Credit Score → Credit Monitoring → Health & Wellness → Credit Repair → Health Insurance → Mortgage Refinance → Nutraceuticals → Personal Loans. Four empty categories remain hidden from navigation.
+
+Home/All Offers campaign order: Lending For Bad Credit → RedArrowLoans → MoneyMutual → Self Credit Builder → Ultiself → TransUnion; numbering 01–06. Personal Loans numbers 01–03; other populated category routes start at 01.
+
+## Files changed by this refactor
+
+Paths are relative to `E:\VISHAL LOVANSHI\All InOne`. This list compares against the rollback snapshot, so the pre-existing untracked Ultiself image is not counted as a refactor addition. Generated build files are under ignored `dist/`. Browser scripts and evidence are outside the project.
+
+### Modified (9)
+
+- `CATEGORY_DEVELOPER_GUIDE.md`
+- `IMPLEMENTATION_NOTES.md`
+- `src/components/CategoryNavigation.jsx`
+- `src/components/Footer.jsx`
+- `src/components/Navbar.jsx`
+- `src/components/OfferRenderer.jsx`
+- `src/components/OffersSection.jsx`
+- `src/data/offerCategories.js`
+- `src/pages/Offers.jsx`
+
+### Added (9)
+
+- `MANUAL_CATEGORY_CAMPAIGN_GUIDE.md`
+- `src/pages/categories/BuildingYourCreditScore.jsx`
+- `src/pages/categories/CreditMonitoring.jsx`
+- `src/pages/categories/CreditRepair.jsx`
+- `src/pages/categories/HealthInsurance.jsx`
+- `src/pages/categories/HealthWellness.jsx`
+- `src/pages/categories/MortgageRefinance.jsx`
+- `src/pages/categories/Nutraceuticals.jsx`
+- `src/pages/categories/PersonalLoans.jsx`
+
+### Removed (5)
+
+- `src/components/CampaignGrid.jsx`
+- `src/components/OfferCard.jsx`
+- `src/data/offers.js`
+- `src/pages/offersPages/CreditMonitoring.jsx`
+- `src/pages/offersPages/PersonalLoans.jsx`
+
+---
+
+## Historical implementation notes — before this refactor
+
+The following notes are retained for historical context. Their old campaign-data workflows and some campaign/asset counts are superseded by the current architecture and guide above.
+
 # SuperPremiumOffers implementation status
 
 Updated the existing React/Vite project in place. Existing App routes and ScrollToTop are unchanged. No dependencies added and no deployment performed.

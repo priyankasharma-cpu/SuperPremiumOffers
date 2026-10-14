@@ -11,8 +11,7 @@ import {
     WalletCards,
 } from "lucide-react";
 
-import OfferCard from "./OfferCard";
-import { availableOffers } from "../data/offerCategories";
+import OfferRenderer from "./OfferRenderer";
 
 const OffersSection = () => {
     const scrollToHowItWorks = () => {
@@ -297,7 +296,7 @@ const OffersSection = () => {
                     OFFER CARDS
                     MOBILE  = 1
                     TABLET  = 2
-                    DESKTOP = 3
+                    DESKTOP = 2
                 ================================================== */}
 
                 <div
@@ -313,13 +312,7 @@ const OffersSection = () => {
                         lg:gap-7
                     "
                 >
-                    {availableOffers.map((offer, index) => (
-                        <OfferCard
-                            key={offer.id}
-                            offer={offer}
-                            index={index}
-                        />
-                    ))}
+                    <OfferRenderer />
                 </div>
 
                 {/* =================================================

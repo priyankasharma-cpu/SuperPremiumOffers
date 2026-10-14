@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 import logo from "../images/weblogo.png";
-import { availableOfferCategories } from "../data/offerCategories";
+import { availableOfferCategories } from "./OfferRenderer";
 
 // Keep footer category links aligned with the populated categories in the navbar.
 const footerCategories = availableOfferCategories;
